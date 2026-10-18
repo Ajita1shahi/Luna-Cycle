@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join LunaCycle</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            font-family: "Segoe UI", sans-serif;
+            color: #59425f;
+            background: linear-gradient(135deg, #fff7fb, #f0eaff);
+        }
+        .card {
+            width: 100%;
+            max-width: 440px;
+            padding: 36px;
+            background: white;
+            border: 1px solid #f0e1ee;
+            border-radius: 24px;
+            box-shadow: 0 12px 40px #79507812;
+        }
+        .logo { color: #bd7bb5; font-size: 25px; font-weight: bold; }
+        h1 { margin-bottom: 8px; font-size: 27px; }
+        .intro { color: #8a7b8d; line-height: 1.6; }
+        label { display: block; margin: 18px 0 7px; font-size: 14px; }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e8d9e8;
+            border-radius: 10px;
+            font: inherit;
+        }
+        .helptext, ul { color: #8a7b8d; font-size: 12px; line-height: 1.6; }
+        ul { padding-left: 18px; }
+        .errorlist { color: #b34468; font-size: 13px; }
+        button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 14px;
+            border: 0;
+            border-radius: 12px;
+            background: #bd7bb5;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .bottom { margin-top: 22px; text-align: center; font-size: 14px; }
+        a { color: #a15b99; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="logo">☾ LunaCycle</div>
+        <h1>Create your account 🌸</h1>
+        <p class="intro">Your personal space to understand and care for your cycle.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {{ field.errors }}
+                {% if field.help_text %}
+                    <div class="helptext">{{ field.help_text }}</div>
+                {% endif %}
+            {% endfor %}
+
+            <button type="submit">Create my account</button>
+        </form>
+
+        <div class="bottom">
+            Already have an account? <a href="{% url 'login' %}">Log in</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,460 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LunaCycle | Your Cycle, Your Rhythm</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: #fff8fb;
+            color: #493b50;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 8%;
+            background: white;
+            border-bottom: 1px solid #f4e5ef;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #bd7bb5;
+        }
+
+        header span {
+            color: #8e7a94;
+            font-size: 14px;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 45px auto;
+            padding: 0 24px;
+        }
+
+        .welcome {
+            background: linear-gradient(135deg, #f8e7f5, #eee9ff, #fff0e8);
+            border-radius: 28px;
+            padding: 45px;
+            margin-bottom: 32px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #ffffffc9;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: clamp(30px, 5vw, 46px);
+            line-height: 1.2;
+            margin-bottom: 16px;
+            color: #59425f;
+        }
+
+        .welcome p {
+            font-size: 16px;
+            line-height: 1.8;
+            max-width: 580px;
+            color: #75647a;
+        }
+
+        .section-title {
+            margin: 35px 0 18px;
+            font-size: 23px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #f1e5ef;
+            border-radius: 22px;
+            padding: 25px;
+            box-shadow: 0 8px 25px #6b426b08;
+            margin-bottom: 18px;
+            overflow-wrap: anywhere;
+        }
+
+        .emoji {
+            font-size: 28px;
+            margin-bottom: 14px;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            font-size: 17px;
+        }
+
+        .card p {
+            color: #8a7b8d;
+            font-size: 14px;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+        }
+
+        .track-card {
+            max-width: 760px;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #68516d;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #e8d9e8;
+            border-radius: 12px;
+            background: #fffafd;
+            color: #493b50;
+            font: inherit;
+            outline: none;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #bd7bb5;
+            box-shadow: 0 0 0 3px #bd7bb51a;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            border: none;
+            border-radius: 12px;
+            padding: 13px 22px;
+            background: #bd7bb5;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #a966a0;
+        }
+
+        .logout-button {
+            background: #f2e7f2;
+            color: #785779;
+            padding: 10px 16px;
+        }
+
+        .logout-button:hover {
+            background: #ead9ea;
+        }
+
+        .messages {
+            margin-bottom: 22px;
+        }
+
+        .message {
+            background: #f0eaf9;
+            color: #655078;
+            border-radius: 12px;
+            padding: 13px 16px;
+            margin-bottom: 10px;
+        }
+
+        .error {
+            color: #b34468;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .error p + p {
+            margin-top: 5px;
+        }
+
+        .history-date {
+            color: #a15b99;
+            margin-bottom: 12px;
+        }
+
+        .empty-state {
+            background: #fff0f5;
+            padding: 24px;
+            border-radius: 18px;
+            color: #80657b;
+            line-height: 1.8;
+        }
+
+        .note {
+            margin-top: 30px;
+            padding: 22px;
+            background: #fff0f5;
+            border-radius: 18px;
+            color: #80657b;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 15px;
+            color: #a28da4;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 20px;
+            }
+
+            main {
+                margin: 28px auto;
+                padding: 0 16px;
+            }
+
+            .welcome {
+                padding: 30px 23px;
+            }
+
+            .card {
+                padding: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">☾ LunaCycle</div>
+
+        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+            <span>Your cycle, your rhythm ♡</span>
+
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="logout-button" type="submit">Log out</button>
+            </form>
+        </div>
+    </header>
+
+    <main>
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <section class="welcome">
+            <div class="tag">✦ Your personal wellness space</div>
+
+            <h1>Understand your cycle.<br>Care for yourself.</h1>
+
+            <p>
+                Welcome to your little corner of self-care.
+                Track your period dates, record how you feel,
+                and gradually learn more about your own cycle.
+            </p>
+        </section>
+
+        <h2 class="section-title">Your wellness space</h2>
+
+        <section class="cards">
+            <div class="card">
+                <div class="emoji">🌸</div>
+                <h3>Period Tracking</h3>
+                <p>Record your period start and end dates in one place.</p>
+            </div>
+
+            <div class="card">
+                <div class="emoji">🌙</div>
+                <h3>Cycle Overview</h3>
+                <p>Build a history of your cycles to understand your personal patterns.</p>
+            </div>
+
+            <div class="card">
+                <div class="emoji">🩷</div>
+                <h3>Symptom Journal</h3>
+                <p>Add optional notes about cramps, mood, energy, and how you feel.</p>
+            </div>
+        </section>
+
+        <!-- Cycle overview -->
+        <h2 class="section-title">Your cycle overview 🌙</h2>
+
+        <section class="cards">
+            <div class="card">
+                <div class="emoji">🌷</div>
+                <h3>Recorded periods</h3>
+                <p>
+                    {{ periods|length }}
+                    period record{{ periods|length|pluralize }}
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="emoji">🗓️</div>
+                <h3>Average cycle length</h3>
+
+                {% if average_cycle %}
+                    <p>{{ average_cycle }} days</p>
+                    <p style="margin-top: 8px;">
+                        Calculated from your recorded period start dates.
+                    </p>
+                {% else %}
+                    <p>
+                        Add another period start date to calculate your
+                        average cycle length.
+                    </p>
+                {% endif %}
+            </div>
+        </section>
+
+        <h3 style="margin: 25px 0 15px;">Previous cycles</h3>
+
+        {% for cycle in cycle_history %}
+            <div class="card">
+                <h3 class="history-date">{{ cycle.length }} days</h3>
+
+                <p>
+                    From {{ cycle.start_date|date:"M d, Y" }}
+                    to {{ cycle.next_start_date|date:"M d, Y" }}
+                </p>
+            </div>
+        {% empty %}
+            <div class="empty-state">
+                Your cycle history will appear here after you record
+                a second period with a different start date.
+            </div>
+        {% endfor %}
+
+        <!-- Period entry form -->
+        <h2 class="section-title">Track your period 🌷</h2>
+
+        <div class="card track-card">
+            <h3>Record your dates</h3>
+
+            <p style="margin-bottom: 24px;">
+                Add your period details below. Your record will be saved
+                to your account.
+            </p>
+
+            <form method="post" action="{% url 'home' %}">
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <div class="field">
+                        <label for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.help_text %}
+                            <p>{{ field.help_text }}</p>
+                        {% endif %}
+
+                        {% if field.errors %}
+                            <div class="error"
+                                 style="margin-top: 8px; padding: 10px; background: #fff0f5; border-radius: 8px;">
+                                {% for error in field.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                {% if form.non_field_errors %}
+                    <div class="error"
+                         style="margin-top: 8px; padding: 10px; background: #fff0f5; border-radius: 8px;">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <button type="submit">♡ Save period record</button>
+            </form>
+        </div>
+
+        <!-- Saved period history -->
+        <h2 class="section-title">Your period history</h2>
+
+        {% for period in periods %}
+            <div class="card">
+                <h3 class="history-date">
+                    🌷 Period starting {{ period.start_date|date:"M d, Y" }}
+                </h3>
+
+                {% if period.end_date %}
+                    <p>
+                        <strong>End date:</strong>
+                        {{ period.end_date|date:"M d, Y" }}
+                    </p>
+                {% else %}
+                    <p>
+                        <strong>End date:</strong> Not entered yet
+                    </p>
+                {% endif %}
+
+                {% if period.notes %}
+                    <p style="margin-top: 10px;">
+                        <strong>Notes:</strong> {{ period.notes }}
+                    </p>
+                {% endif %}
+            </div>
+        {% empty %}
+            <div class="empty-state">
+                <p>🌸 Your period history will appear here.</p>
+                <p>
+                    You haven't added a record yet. When you're ready,
+                    save your first entry using the form above.
+                </p>
+            </div>
+        {% endfor %}
+
+        <div class="note">
+            ♡ Every cycle is different. Cycle patterns can vary from month
+            to month. Cycle length is calculated from the first day of one
+            period to the first day of the next. LunaCycle is a personal
+            tracking tool, not a substitute for professional medical advice.
+        </div>
+    </main>
+
+    <footer>
+        Made with care ♡ LunaCycle
+    </footer>
+</body>
+</html>
