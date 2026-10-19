@@ -1,0 +1,445 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cycle Insights | LunaCycle</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #fff7fb;
+            color: #443447;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #fff;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 3px 15px rgba(100, 60, 100, 0.08);
+        }
+
+        .logo {
+            color: #b85c91;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #704d76;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #c45b98;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 35px auto;
+        }
+
+        .heading {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .heading h1 {
+            color: #a94f88;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .heading p {
+            color: #826d85;
+        }
+
+        .section-title {
+            color: #a94f88;
+            font-size: 22px;
+            margin: 30px 0 16px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .stat-card {
+            background: #fff;
+            padding: 23px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(120, 70, 120, 0.07);
+            border: 1px solid #f4e4f0;
+        }
+
+        .stat-label {
+            color: #826d85;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #a94f88;
+            overflow-wrap: anywhere;
+        }
+
+        .stat-note {
+            color: #99869a;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .panel {
+            background: #fff;
+            padding: 25px;
+            border-radius: 16px;
+            margin-top: 20px;
+            box-shadow: 0 5px 20px rgba(120, 70, 120, 0.07);
+        }
+
+        .panel h2 {
+            color: #a94f88;
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f2e5f0;
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-row strong {
+            color: #704d76;
+            overflow-wrap: anywhere;
+        }
+
+        .count {
+            color: #a94f88;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            color: #8b788e;
+            padding: 12px 0;
+        }
+
+        .notice {
+            margin-top: 25px;
+            padding: 16px;
+            border-radius: 12px;
+            background: #f0e8ff;
+            color: #674b8b;
+            font-size: 13px;
+        }
+
+        .quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .quick-links a {
+            display: inline-block;
+            background: #c46ba5;
+            color: white;
+            padding: 11px 18px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .quick-links a:hover {
+            background: #a94f88;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #927d94;
+            font-size: 13px;
+        }
+
+        @media (max-width: 750px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 500px) {
+            header {
+                padding: 16px 5%;
+            }
+
+            .container {
+                width: 92%;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .heading h1 {
+                font-size: 27px;
+            }
+
+            .stat-card,
+            .panel {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">🌸 LunaCycle</div>
+
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'calendar' %}">Calendar</a>
+        <a href="{% url 'symptom_journal' %}">Journal</a>
+        <a href="{% url 'insights' %}">Insights</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="heading">
+        <h1>My Cycle Insights 🌷</h1>
+        <p>Understand your recorded cycle history and daily wellbeing.</p>
+    </section>
+
+    <h2 class="section-title">Your Overview 💗</h2>
+
+    <section class="stats-grid">
+
+        <article class="stat-card">
+            <div class="stat-label">Period Records</div>
+            <div class="stat-value">{{ total_periods }}</div>
+            <div class="stat-note">Saved period records</div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-label">Average Cycle</div>
+            <div class="stat-value">
+                {% if average_cycle %}
+                    {{ average_cycle }} days
+                {% else %}
+                    —
+                {% endif %}
+            </div>
+            <div class="stat-note">Requires at least two period start dates</div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-label">Average Period Duration</div>
+            <div class="stat-value">
+                {% if average_period_duration != None %}
+                    {{ average_period_duration }} days
+                {% else %}
+                    —
+                {% endif %}
+            </div>
+            <div class="stat-note">Based on records with an end date</div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-label">Next Estimated Period</div>
+            <div class="stat-value">
+                {% if predicted_start %}
+                    {{ predicted_start|date:"M d, Y" }}
+                {% else %}
+                    —
+                {% endif %}
+            </div>
+            <div class="stat-note">An estimate based on your average cycle</div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-label">Journal Entries</div>
+            <div class="stat-value">{{ total_journal_entries }}</div>
+            <div class="stat-note">Saved daily wellbeing records</div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-label">Average Pain Level</div>
+            <div class="stat-value">
+                {% if average_pain != None %}
+                    {{ average_pain }}/10
+                {% else %}
+                    —
+                {% endif %}
+            </div>
+            <div class="stat-note">Average of your recorded pain ratings</div>
+        </article>
+
+    </section>
+
+    <h2 class="section-title">Cycle Length Patterns 📅</h2>
+
+    <section class="panel">
+        <h2>Cycle Range</h2>
+
+        {% if shortest_cycle != None and longest_cycle != None %}
+            <div class="stat-row">
+                <span>Shortest recorded cycle</span>
+                <strong>{{ shortest_cycle }} days</strong>
+            </div>
+
+            <div class="stat-row">
+                <span>Longest recorded cycle</span>
+                <strong>{{ longest_cycle }} days</strong>
+            </div>
+
+            <div class="stat-row">
+                <span>Average recorded cycle</span>
+                <strong>{{ average_cycle }} days</strong>
+            </div>
+        {% else %}
+            <p class="empty-state">
+                Add at least two period start dates to calculate cycle-length patterns.
+            </p>
+        {% endif %}
+    </section>
+
+    <h2 class="section-title">Mood Insights 🌈</h2>
+
+    <section class="panel">
+        <h2>Your Recorded Moods</h2>
+
+        {% if mood_stats %}
+            {% if most_common_mood %}
+                <p style="margin-bottom: 15px;">
+                    Most frequently recorded mood:
+                    <strong style="color:#a94f88;">{{ most_common_mood }}</strong>
+                </p>
+            {% endif %}
+
+            {% for item in mood_stats %}
+                <div class="stat-row">
+                    <span>{{ item.label }}</span>
+                    <span class="count">
+                        {{ item.count }}
+                        {% if item.count == 1 %}entry{% else %}entries{% endif %}
+                    </span>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty-state">
+                Record your mood in the symptom journal to see your mood patterns here.
+            </p>
+        {% endif %}
+    </section>
+
+    <h2 class="section-title">Symptom Insights 🌼</h2>
+
+    <section class="panel">
+        <h2>Frequently Recorded Symptoms</h2>
+
+        {% if symptom_stats %}
+            {% for item in symptom_stats %}
+                <div class="stat-row">
+                    <span>{{ item.label|title }}</span>
+                    <span class="count">
+                        {{ item.count }}
+                        {% if item.count == 1 %}record{% else %}records{% endif %}
+                    </span>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty-state">
+                Add symptoms such as cramps, headache, or bloating to your journal.
+                Your recorded symptom counts will appear here.
+            </p>
+        {% endif %}
+    </section>
+
+    <h2 class="section-title">Recent Journal Activity 📖</h2>
+
+    <section class="panel">
+        <h2>Your Latest Entries</h2>
+
+        {% if recent_entries %}
+            {% for entry in recent_entries %}
+                <div class="stat-row">
+                    <div>
+                        <strong>{{ entry.date|date:"M d, Y" }}</strong>
+                        <div style="color:#826d85;font-size:13px;">
+                            {% if entry.mood %}
+                                {{ entry.get_mood_display }}
+                            {% else %}
+                                Mood not recorded
+                            {% endif %}
+                            · Pain: {{ entry.pain_level }}/10
+                        </div>
+                    </div>
+
+                    <span class="count">
+                        {{ entry.get_flow_display }}
+                    </span>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty-state">
+                Your journal history will appear here after you save entries.
+            </p>
+        {% endif %}
+    </section>
+
+    <div class="notice">
+        <strong>A gentle reminder 💗</strong><br>
+        These insights summarize the information you have entered. Cycle estimates
+        can be inaccurate, particularly when cycles vary or records are limited.
+        They are not a diagnosis or a reliable method of contraception.
+    </div>
+
+    <div class="quick-links">
+        <a href="{% url 'home' %}">Record a Period</a>
+        <a href="{% url 'calendar' %}">View Calendar</a>
+        <a href="{% url 'symptom_journal' %}">Open Symptom Journal</a>
+    </div>
+
+</main>
+
+<footer>
+    LunaCycle 💗 — Your cycle, your story, your wellbeing.
+</footer>
+
+</body>
+</html>

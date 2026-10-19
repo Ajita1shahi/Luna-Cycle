@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symptom Journal | LunaCycle</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #fff7fb;
+            color: #443447;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #ffffff;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 3px 15px rgba(100, 60, 100, 0.08);
+        }
+
+        .logo {
+            color: #b85c91;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #704d76;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #c45b98;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 35px auto;
+        }
+
+        .page-heading {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .page-heading h1 {
+            color: #a94f88;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .page-heading p {
+            color: #826d85;
+        }
+
+        .card {
+            background: white;
+            padding: 28px;
+            border-radius: 18px;
+            margin-bottom: 28px;
+            box-shadow: 0 5px 22px rgba(120, 70, 120, 0.08);
+        }
+
+        .card h2 {
+            color: #a94f88;
+            margin-bottom: 18px;
+            font-size: 22px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 7px;
+            font-size: 14px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ead5e7;
+            border-radius: 9px;
+            background: #fffafd;
+            color: #443447;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #c779b1;
+            box-shadow: 0 0 0 3px rgba(199, 121, 177, 0.12);
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #8b788e;
+            margin-top: 5px;
+        }
+
+        .errorlist {
+            color: #bd3e62;
+            font-size: 13px;
+            list-style: none;
+            margin: 5px 0;
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 9px;
+            margin-bottom: 10px;
+            background: #f0e8ff;
+            color: #674b8b;
+        }
+
+        .message.success {
+            background: #e7f7ec;
+            color: #287648;
+        }
+
+        .message.error {
+            background: #ffe9ee;
+            color: #a43251;
+        }
+
+        .primary-btn {
+            border: none;
+            border-radius: 9px;
+            padding: 12px 22px;
+            background: #c46ba5;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .primary-btn:hover {
+            background: #a94f88;
+        }
+
+        .entry {
+            border: 1px solid #f0dfed;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 16px;
+            background: #fffafd;
+        }
+
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .entry-date {
+            color: #a94f88;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .entry-details p {
+            margin: 7px 0;
+            overflow-wrap: anywhere;
+        }
+
+        .entry-details strong {
+            color: #704d76;
+        }
+
+        .entry-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+
+        .edit-btn {
+            background: #eee6ff;
+            color: #674b8b;
+        }
+
+        .delete-btn {
+            background: #ffe8ed;
+            color: #b43e5c;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 15px;
+            color: #8b788e;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #927d94;
+            font-size: 13px;
+        }
+
+        @media (max-width: 650px) {
+            header {
+                padding: 16px 5%;
+            }
+
+            .container {
+                width: 92%;
+                margin-top: 25px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .page-heading h1 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">🌸 LunaCycle</div>
+
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'calendar' %}">Calendar</a>
+        <a href="{% url 'symptom_journal' %}">Symptom Journal</a>
+
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit"
+                    style="border:none;background:none;color:#704d76;font-weight:bold;cursor:pointer;font-size:14px;">
+                Logout
+            </button>
+        </form>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="page-heading">
+        <h1>My Symptom Journal 🌷</h1>
+        <p>Listen to your body, understand your patterns, and take care of yourself.</p>
+    </section>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <section class="card">
+        <h2>How are you feeling today? 💗</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-grid">
+                {% for field in form %}
+                    <div class="form-group {% if field.name == 'symptoms' or field.name == 'notes' %}full-width{% endif %}">
+                        <label for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.help_text %}
+                            <span class="help-text">{{ field.help_text }}</span>
+                        {% endif %}
+
+                        {% if field.errors %}
+                            {{ field.errors }}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% if form.non_field_errors %}
+                {{ form.non_field_errors }}
+            {% endif %}
+
+            <button type="submit" class="primary-btn">
+                Save Journal Entry
+            </button>
+        </form>
+    </section>
+
+    <section class="card">
+        <h2>My Previous Entries 📖</h2>
+
+        {% for entry in entries %}
+            <article class="entry">
+
+                <div class="entry-header">
+                    <div class="entry-date">
+                        {{ entry.date|date:"F d, Y" }}
+                    </div>
+                </div>
+
+                <div class="entry-details">
+                    <p>
+                        <strong>Mood:</strong>
+                        {% if entry.mood %}
+                            {{ entry.get_mood_display }}
+                        {% else %}
+                            Not recorded
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Period Flow:</strong>
+                        {{ entry.get_flow_display }}
+                    </p>
+
+                    <p>
+                        <strong>Pain Level:</strong>
+                        {{ entry.pain_level }}/10
+                    </p>
+
+                    <p>
+                        <strong>Energy:</strong>
+                        {% if entry.energy_level %}
+                            {{ entry.get_energy_level_display }}
+                        {% else %}
+                            Not recorded
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Symptoms:</strong>
+                        {% if entry.symptoms %}
+                            {{ entry.symptoms|linebreaksbr }}
+                        {% else %}
+                            None recorded
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Personal Notes:</strong>
+                        {% if entry.notes %}
+                            {{ entry.notes|linebreaksbr }}
+                        {% else %}
+                            No notes
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="entry-actions">
+                    <a href="{% url 'edit_symptom' entry.id %}"
+                       class="action-btn edit-btn">
+                        Edit Entry
+                    </a>
+
+                    <form method="post"
+                          action="{% url 'delete_symptom' entry.id %}"
+                          onsubmit="return confirm('Are you sure you want to delete this journal entry?');">
+                        {% csrf_token %}
+                        <button type="submit" class="action-btn delete-btn">
+                            Delete Entry
+                        </button>
+                    </form>
+                </div>
+
+            </article>
+        {% empty %}
+            <div class="empty-state">
+                <h3>No journal entries yet 🌼</h3>
+                <p>Your saved mood and symptom entries will appear here.</p>
+            </div>
+        {% endfor %}
+    </section>
+
+</main>
+
+<footer>
+    LunaCycle 💗 — Your cycle, your story, your wellbeing.
+</footer>
+
+</body>
+</html>

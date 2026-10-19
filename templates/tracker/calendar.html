@@ -1,0 +1,278 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Period Calendar | LunaCycle</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: #fff8fb;
+            color: #493b50;
+        }
+
+        header {
+            padding: 22px 8%;
+            background: white;
+            border-bottom: 1px solid #f4e5ef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            color: #bd7bb5;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        a {
+            color: #a966a0;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid #f1e5ef;
+            border-radius: 22px;
+            padding: 25px;
+            margin-bottom: 22px;
+        }
+
+        h1, h2 {
+            color: #59425f;
+        }
+
+        .month-navigation {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .month-navigation a {
+            background: #f2e7f2;
+            padding: 10px 14px;
+            border-radius: 10px;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .weekday {
+            text-align: center;
+            font-weight: bold;
+            color: #8e7a94;
+            padding: 10px 0;
+            font-size: 13px;
+        }
+
+        .day {
+            min-height: 75px;
+            padding: 9px 4px;
+            border-radius: 12px;
+            background: #fffafd;
+            border: 1px solid #f1e5ef;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .day.empty {
+            background: transparent;
+            border-color: transparent;
+        }
+
+        .day.period {
+            background: #f8dce9;
+            border-color: #eab5cf;
+            color: #8c416d;
+            font-weight: bold;
+        }
+
+        .day.predicted {
+            background: #eee9ff;
+            border: 1px dashed #a99ad7;
+            color: #65528e;
+        }
+
+        .day.today {
+            outline: 2px solid #bd7bb5;
+            outline-offset: -2px;
+        }
+
+        .legend {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            color: #80657b;
+            font-size: 13px;
+        }
+
+        .legend span {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .dot {
+            width: 13px;
+            height: 13px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .period-dot {
+            background: #f8dce9;
+        }
+
+        .predicted-dot {
+            background: #eee9ff;
+            border: 1px dashed #a99ad7;
+        }
+
+        .today-dot {
+            background: white;
+            border: 2px solid #bd7bb5;
+        }
+
+        .info {
+            background: #fff0f5;
+            padding: 18px;
+            border-radius: 14px;
+            color: #80657b;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 500px) {
+            main {
+                margin: 25px auto;
+                padding: 0 12px;
+            }
+
+            .panel {
+                padding: 14px;
+            }
+
+            .calendar {
+                gap: 3px;
+            }
+
+            .day {
+                min-height: 55px;
+                padding: 8px 1px;
+                font-size: 12px;
+            }
+
+            .weekday {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">☾ LunaCycle</div>
+        <a href="{% url 'home' %}">← Back to dashboard</a>
+    </header>
+
+    <main>
+        <h1>My Period Calendar 🌷</h1>
+
+        <p style="color: #8a7b8d; line-height: 1.8; margin-top: 10px;">
+            View your recorded period dates and your estimated upcoming period.
+        </p>
+
+        <section class="panel">
+            <div class="month-navigation">
+                <a href="?month={{ previous_month }}">← Previous</a>
+                <h2 style="margin: 0; text-align: center;">
+                    {{ month_name }} {{ year }}
+                </h2>
+                <a href="?month={{ next_month }}">Next →</a>
+            </div>
+
+            <div class="calendar">
+                {% for weekday in weekdays %}
+                    <div class="weekday">{{ weekday }}</div>
+                {% endfor %}
+
+                {% for day in calendar_days %}
+                    {% if day.date %}
+                        <div class="day
+                            {% if day.is_period %}period{% endif %}
+                            {% if day.is_predicted %}predicted{% endif %}
+                            {% if day.is_today %}today{% endif %}">
+                            {{ day.date.day }}
+
+                            {% if day.is_period %}
+                                <div style="font-size: 10px; margin-top: 5px;">Period</div>
+                            {% elif day.is_predicted %}
+                                <div style="font-size: 10px; margin-top: 5px;">Estimated</div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="day empty"></div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="legend">
+                <span><i class="dot period-dot"></i> Recorded period</span>
+                <span><i class="dot predicted-dot"></i> Estimated period</span>
+                <span><i class="dot today-dot"></i> Today</span>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>Cycle information</h2>
+
+            {% if average_cycle %}
+                <p style="margin: 15px 0; line-height: 1.8;">
+                    Your average recorded cycle length is
+                    <strong>{{ average_cycle }} days</strong>.
+                </p>
+
+                {% if predicted_start %}
+                    <p style="line-height: 1.8;">
+                        Your next period is estimated to start around
+                        <strong>{{ predicted_start|date:"M d, Y" }}</strong>.
+                    </p>
+                {% endif %}
+            {% else %}
+                <p style="margin-top: 12px; line-height: 1.8;">
+                    Record at least two different period start dates to
+                    calculate an average cycle and estimate your next period.
+                </p>
+            {% endif %}
+
+            <div class="info" style="margin-top: 18px;">
+                Cycle predictions are estimates based on your recorded dates.
+                Your actual period may start earlier or later. This calendar
+                is not a contraceptive or medical tool.
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Period | LunaCycle</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 25px;
+            font-family: "Segoe UI", sans-serif;
+            background: #fff8fb;
+            color: #493b50;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 45px auto;
+            padding: 35px;
+            background: white;
+            border: 1px solid #f1e5ef;
+            border-radius: 24px;
+            box-shadow: 0 8px 25px #6b426b08;
+        }
+
+        h1 {
+            color: #a966a0;
+            margin-top: 0;
+        }
+
+        .intro {
+            color: #8a7b8d;
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #68516d;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #e8d9e8;
+            border-radius: 12px;
+            background: #fffafd;
+            font: inherit;
+            color: #493b50;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button,
+        .back-link {
+            display: inline-block;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 18px;
+            font: inherit;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        button {
+            background: #bd7bb5;
+            color: white;
+        }
+
+        .back-link {
+            background: #f2e7f2;
+            color: #785779;
+            margin-left: 8px;
+        }
+
+        .error {
+            color: #b34468;
+            font-size: 13px;
+            margin-top: 7px;
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 23px;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+        <h1>🌷 Edit your period</h1>
+
+        <p class="intro">
+            Update your dates or notes below. Your changes will be
+            saved to your LunaCycle account.
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div class="field">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% for error in field.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            {% for error in form.non_field_errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+
+            <button type="submit">Save changes</button>
+            <a class="back-link" href="{% url 'home' %}">
+                Cancel
+            </a>
+        </form>
+    </main>
+</body>
+</html>
