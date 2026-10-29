@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fff8fb">
     <title>Period Calendar | LunaCycle</title>
 
     <style>
@@ -41,6 +42,10 @@
             font-weight: 600;
         }
 
+        a:hover {
+            color: #85467f;
+        }
+
         main {
             max-width: 900px;
             margin: 40px auto;
@@ -71,6 +76,7 @@
             background: #f2e7f2;
             padding: 10px 14px;
             border-radius: 10px;
+            white-space: nowrap;
         }
 
         .calendar {
@@ -88,13 +94,19 @@
         }
 
         .day {
-            min-height: 75px;
-            padding: 9px 4px;
+            min-width: 0;
+            min-height: 78px;
+            padding: 8px 3px;
             border-radius: 12px;
             background: #fffafd;
             border: 1px solid #f1e5ef;
             text-align: center;
             font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 3px;
         }
 
         .day.empty {
@@ -120,6 +132,21 @@
             outline-offset: -2px;
         }
 
+        .day-number {
+            line-height: 1.4;
+        }
+
+        .day-emoji {
+            font-size: 21px;
+            line-height: 1.2;
+        }
+
+        .day-label {
+            font-size: 10px;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
         .legend {
             display: flex;
             gap: 16px;
@@ -140,10 +167,12 @@
             height: 13px;
             border-radius: 4px;
             display: inline-block;
+            flex-shrink: 0;
         }
 
         .period-dot {
             background: #f8dce9;
+            border: 1px solid #eab5cf;
         }
 
         .predicted-dot {
@@ -165,6 +194,14 @@
         }
 
         @media (max-width: 500px) {
+            header {
+                padding: 18px 5%;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+
             main {
                 margin: 25px auto;
                 padding: 0 12px;
@@ -172,6 +209,20 @@
 
             .panel {
                 padding: 14px;
+                border-radius: 17px;
+            }
+
+            .month-navigation {
+                gap: 5px;
+            }
+
+            .month-navigation a {
+                padding: 8px 7px;
+                font-size: 12px;
+            }
+
+            .month-navigation h2 {
+                font-size: 17px;
             }
 
             .calendar {
@@ -179,13 +230,37 @@
             }
 
             .day {
-                min-height: 55px;
-                padding: 8px 1px;
+                min-height: 65px;
+                padding: 7px 1px;
                 font-size: 12px;
+                border-radius: 9px;
+            }
+
+            .day-emoji {
+                font-size: 17px;
+            }
+
+            .day-label {
+                font-size: 8px;
             }
 
             .weekday {
                 font-size: 11px;
+            }
+
+            .legend {
+                gap: 12px;
+            }
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+            .day {
+                transition: transform 0.15s ease;
+            }
+
+            .day.period:hover,
+            .day.predicted:hover {
+                transform: translateY(-2px);
             }
         }
     </style>
@@ -207,9 +282,11 @@
         <section class="panel">
             <div class="month-navigation">
                 <a href="?month={{ previous_month }}">← Previous</a>
+
                 <h2 style="margin: 0; text-align: center;">
                     {{ month_name }} {{ year }}
                 </h2>
+
                 <a href="?month={{ next_month }}">Next →</a>
             </div>
 
@@ -220,16 +297,26 @@
 
                 {% for day in calendar_days %}
                     {% if day.date %}
-                        <div class="day
-                            {% if day.is_period %}period{% endif %}
-                            {% if day.is_predicted %}predicted{% endif %}
-                            {% if day.is_today %}today{% endif %}">
-                            {{ day.date.day }}
+                        <div
+                            class="day{% if day.is_period %} period{% endif %}{% if day.is_predicted %} predicted{% endif %}{% if day.is_today %} today{% endif %}"
+                            {% if day.is_period %}
+                                aria-label="{{ day.date|date:'F j' }}: Recorded period"
+                            {% elif day.is_predicted %}
+                                aria-label="{{ day.date|date:'F j' }}: Estimated period"
+                            {% else %}
+                                aria-label="{{ day.date|date:'F j' }}"
+                            {% endif %}
+                        >
+                            <span class="day-number">
+                                {{ day.date.day }}
+                            </span>
 
                             {% if day.is_period %}
-                                <div style="font-size: 10px; margin-top: 5px;">Period</div>
+                                <span class="day-emoji" aria-hidden="true">🩸</span>
+                                <span class="day-label">Period</span>
                             {% elif day.is_predicted %}
-                                <div style="font-size: 10px; margin-top: 5px;">Estimated</div>
+                                <span class="day-emoji" aria-hidden="true">🌸</span>
+                                <span class="day-label">Estimated</span>
                             {% endif %}
                         </div>
                     {% else %}
@@ -239,14 +326,25 @@
             </div>
 
             <div class="legend">
-                <span><i class="dot period-dot"></i> Recorded period</span>
-                <span><i class="dot predicted-dot"></i> Estimated period</span>
-                <span><i class="dot today-dot"></i> Today</span>
+                <span>
+                    <i class="dot period-dot"></i>
+                    🩸 Recorded period
+                </span>
+
+                <span>
+                    <i class="dot predicted-dot"></i>
+                    🌸 Estimated period
+                </span>
+
+                <span>
+                    <i class="dot today-dot"></i>
+                    Today
+                </span>
             </div>
         </section>
 
         <section class="panel">
-            <h2>Cycle information</h2>
+            <h2>Cycle information 💗</h2>
 
             {% if average_cycle %}
                 <p style="margin: 15px 0; line-height: 1.8;">
@@ -268,9 +366,9 @@
             {% endif %}
 
             <div class="info" style="margin-top: 18px;">
-                Cycle predictions are estimates based on your recorded dates.
-                Your actual period may start earlier or later. This calendar
-                is not a contraceptive or medical tool.
+                💕 Cycle predictions are estimates based on your recorded
+                dates. Your actual period may start earlier or later.
+                This calendar is not a contraceptive or medical tool.
             </div>
         </section>
     </main>
