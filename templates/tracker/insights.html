@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cycle Insights | LunaCycle</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -156,6 +158,26 @@
             padding: 12px 0;
         }
 
+        /* Chart styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 520px;
+            height: 320px;
+            margin: 15px auto 25px;
+        }
+
+        .chart-container.wide {
+            max-width: 850px;
+        }
+
+        .chart-description {
+            text-align: center;
+            color: #826d85;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
         .notice {
             margin-top: 25px;
             padding: 16px;
@@ -220,6 +242,10 @@
             .stat-card,
             .panel {
                 padding: 20px;
+            }
+
+            .chart-container {
+                height: 270px;
             }
         }
     </style>
@@ -344,12 +370,25 @@
         <h2>Your Recorded Moods</h2>
 
         {% if mood_stats %}
+
+            <p class="chart-description">
+                Explore the distribution of your recorded moods.
+            </p>
+
+            <div class="chart-container">
+                <canvas id="moodChart"></canvas>
+            </div>
+
             {% if most_common_mood %}
                 <p style="margin-bottom: 15px;">
                     Most frequently recorded mood:
                     <strong style="color:#a94f88;">{{ most_common_mood }}</strong>
                 </p>
             {% endif %}
+
+            <h3 style="color:#704d76;font-size:16px;margin-bottom:8px;">
+                Mood Breakdown
+            </h3>
 
             {% for item in mood_stats %}
                 <div class="stat-row">
@@ -360,6 +399,7 @@
                     </span>
                 </div>
             {% endfor %}
+
         {% else %}
             <p class="empty-state">
                 Record your mood in the symptom journal to see your mood patterns here.
@@ -373,6 +413,19 @@
         <h2>Frequently Recorded Symptoms</h2>
 
         {% if symptom_stats %}
+
+            <p class="chart-description">
+                Compare the frequency of your recorded symptoms.
+            </p>
+
+            <div class="chart-container wide">
+                <canvas id="symptomChart"></canvas>
+            </div>
+
+            <h3 style="color:#704d76;font-size:16px;margin-bottom:8px;">
+                Symptom Breakdown
+            </h3>
+
             {% for item in symptom_stats %}
                 <div class="stat-row">
                     <span>{{ item.label|title }}</span>
@@ -382,6 +435,7 @@
                     </span>
                 </div>
             {% endfor %}
+
         {% else %}
             <p class="empty-state">
                 Add symptoms such as cramps, headache, or bloating to your journal.
@@ -440,6 +494,175 @@
 <footer>
     LunaCycle 💗 — Your cycle, your story, your wellbeing.
 </footer>
+
+{{ mood_stats|json_script:"mood-data" }}
+{{ symptom_stats|json_script:"symptom-data" }}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const moodElement = document.getElementById("mood-data");
+    const symptomElement = document.getElementById("symptom-data");
+
+    const moodData = moodElement
+        ? JSON.parse(moodElement.textContent)
+        : [];
+
+    const symptomData = symptomElement
+        ? JSON.parse(symptomElement.textContent)
+        : [];
+
+    const palette = [
+        "#D98CB8",
+        "#B39DDB",
+        "#F4B6C2",
+        "#A8D5BA",
+        "#F7D794",
+        "#A5C8E4",
+        "#E6A8D7",
+        "#C5B0E8",
+        "#F2AFA3",
+        "#9CCFC4"
+    ];
+
+    if (typeof Chart === "undefined") {
+        console.error("Chart.js could not load. Check your internet connection.");
+        return;
+    }
+
+    const moodCanvas = document.getElementById("moodChart");
+
+    if (moodCanvas && moodData.length > 0) {
+        new Chart(moodCanvas, {
+            type: "pie",
+
+            data: {
+                labels: moodData.map(item => item.label),
+
+                datasets: [{
+                    data: moodData.map(item => item.count),
+                    backgroundColor: moodData.map(
+                        (_, index) => palette[index % palette.length]
+                    ),
+                    borderColor: "#ffffff",
+                    borderWidth: 3,
+                    hoverOffset: 8
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: {
+                            padding: 18,
+                            usePointStyle: true,
+                            pointStyle: "circle"
+                        }
+                    },
+
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const counts = context.dataset.data;
+                                const total = counts.reduce(
+                                    (sum, value) => sum + value, 0
+                                );
+
+                                const value = context.raw;
+                                const percentage = total
+                                    ? ((value / total) * 100).toFixed(1)
+                                    : 0;
+
+                                return context.label + ": " +
+                                    value + " entries (" +
+                                    percentage + "%)";
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    const symptomCanvas = document.getElementById("symptomChart");
+
+    if (symptomCanvas && symptomData.length > 0) {
+        new Chart(symptomCanvas, {
+            type: "bar",
+
+            data: {
+                labels: symptomData.map(item => item.label),
+
+                datasets: [{
+                    label: "Recorded entries",
+                    data: symptomData.map(item => item.count),
+                    backgroundColor: "#D98CB8",
+                    hoverBackgroundColor: "#A94F88",
+                    borderColor: "#A94F88",
+                    borderWidth: 1,
+                    borderRadius: 8,
+                    barThickness: "flex",
+                    maxBarThickness: 32
+                }]
+            },
+
+            options: {
+                indexAxis: "y",
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0,
+                            stepSize: 1
+                        },
+                        grid: {
+                            color: "#f4e4f0"
+                        },
+                        title: {
+                            display: true,
+                            text: "Number of records",
+                            color: "#826d85"
+                        }
+                    },
+
+                    y: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: "#704d76"
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return context.raw +
+                                    (context.raw === 1
+                                        ? " record"
+                                        : " records");
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
 
 </body>
 </html>
