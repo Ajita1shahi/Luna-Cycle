@@ -2,7 +2,7 @@
 import calendar
 from collections import Counter
 from datetime import date, timedelta
-
+from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -16,6 +16,7 @@ from .forms import PeriodForm, SymptomEntryForm
 from .models import Period, SymptomEntry
 
 
+
 def signup_view(request):
     if request.user.is_authenticated:
         return redirect("home")
@@ -24,15 +25,44 @@ def signup_view(request):
         form = UserCreationForm(request.POST)
 
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, "Welcome to LunaCycle!")
-            return redirect("home")
+            username = form.cleaned_data["username"]
+
+            # Check for an existing username before saving.
+            if User.objects.filter(username__iexact=username).exists():
+                form.add_error(
+                    "username",
+                    "This username is already taken. Please choose another."
+                )
+            else:
+                try:
+                    user = form.save()
+                    login(request, user)
+                    messages.success(
+                        request,
+                        "Welcome to LunaCycle!"
+                    )
+                    return redirect("home")
+
+                except Exception as error:
+                    # Handle an unexpected duplicate username safely.
+                    from django.db import IntegrityError
+
+                    if isinstance(error, IntegrityError):
+                        form.add_error(
+                            "username",
+                            "This username is already taken. Please choose another."
+                        )
+                    else:
+                        raise
+
     else:
         form = UserCreationForm()
 
-    return render(request, "tracker/signup.html", {"form": form})
-
+    return render(
+        request,
+        "tracker/signup.html",
+        {"form": form}
+    )
 
 def login_view(request):
     if request.user.is_authenticated:
