@@ -91,21 +91,6 @@ It's more than a calendar. It's a small reminder to listen to your body.
 | CSS | Styling and layout |
 | JavaScript | Interactive functionality |
 
-## 🌷 A Little Preview
-
-<p align="center">
-  <i>Every cycle tells a story. LunaCycle helps you keep track of yours.</i>
-</p>
-
-<!-- Add your actual application screenshots here -->
-
-| Dashboard | Calendar |
-|---|---|
-| Add dashboard screenshot here | Add calendar screenshot here |
-
-| Insights | Account |
-|---|---|
-| Add insights screenshot here | Add account screenshot here |
 
 ## 💻 Getting Started
 
